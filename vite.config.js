@@ -1,7 +1,7 @@
 
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { cpSync, mkdirSync } from "node:fs";
+import { copyFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 export default defineConfig({
@@ -12,8 +12,15 @@ export default defineConfig({
       closeBundle() {
         const source = resolve("node_modules/stockfish/bin");
         const target = resolve("dist/stockfish");
+
         mkdirSync(target, { recursive: true });
-        cpSync(source, target, { recursive: true });
+
+        for (const file of [
+          "stockfish-19-lite-single.js",
+          "stockfish-19-lite-single.wasm"
+        ]) {
+          copyFileSync(resolve(source, file), resolve(target, file));
+        }
       }
     }
   ]
